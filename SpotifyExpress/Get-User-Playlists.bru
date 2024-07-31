@@ -5,7 +5,15 @@ meta {
 }
 
 get {
-  url: ttps://api.spotify.com/v1/users//{user_id}/playlists
+  url: https://api.spotify.com/v1/users/{{user_id}}/playlists?limit=1
   body: none
-  auth: none
+  auth: bearer
+}
+
+params:query {
+  limit: 1
+}
+
+auth:bearer {
+  token: {{token}}
 }

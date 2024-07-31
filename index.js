@@ -11,10 +11,9 @@ app.use("/authorization", authorization);
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "*");
-  res.send({ msg: "You've reached Spotify Express" });
+    res.send({ msg: "You've reached Spotify Express" });
 });
 
 app.listen(port, () => {
-  console.log(`Spotify Express is running on @ localhost:${port}`);
+    console.log(`Spotify Express is running on @ localhost:${port}`);
 });

@@ -17,85 +17,94 @@ const state = "dancingDragons";
 let accessToken = "";
 let refreshToken = "";
 
+const getToken = (code) => {
+    return axios.post(spotifyWebAPIURL + getTokenEndpoint, null, {
+        headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            Authorization:
+                "Basic " +
+                new Buffer.from(clientId + ":" + client_secret).toString(
+                    "base64"
+                ),
+        },
+        params: {
+            code: code,
+            redirect_uri: redirectUri,
+            grant_type: "authorization_code",
+        },
+    });
+};
+
+const getRefreshToken = () => {
+    return axios.post(spotifyWebAPIURL + getRefreshTokenEndpoint, null, {
+        headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            Authorization:
+                "Basic " +
+                new Buffer.from(clientId + ":" + client_secret).toString(
+                    "base64"
+                ),
+        },
+        params: {
+            refresh_token: refreshToken,
+            grant_type: "refresh_token",
+        },
+    });
+};
+
 /**GET AUTHORIZATION
  *
  */
-
 router.get("/", (req, res) => {
-  console.log("Start /get-authorization");
+    console.log("Start /get-authorization");
 
-  let urlSearchParams = new URLSearchParams();
-  urlSearchParams.append("client_id", clientId);
-  urlSearchParams.append("redirect_uri", redirectUri);
-  urlSearchParams.append("response_type", "code");
-  urlSearchParams.append("scope", scope);
-  urlSearchParams.append("state", state);
+    let urlSearchParams = new URLSearchParams();
+    urlSearchParams.append("client_id", clientId);
+    urlSearchParams.append("redirect_uri", redirectUri);
+    urlSearchParams.append("response_type", "code");
+    urlSearchParams.append("scope", scope);
+    urlSearchParams.append("state", state);
 
-  res.redirect(
-    spotifyWebAPIURL + authorizationEndpoint + urlSearchParams.toString()
-  );
-  console.log("Complete /get-authorization");
+    res.redirect(
+        spotifyWebAPIURL + authorizationEndpoint + urlSearchParams.toString()
+    );
+
+    console.log("Complete /get-authorization");
 });
 
 /**GET TOKEN
  *
  */
 router.get("/get-token", (req, res) => {
-  console.log("Start /get-token");
-  let code = req.query.code || null;
-  let state = req.query.state || null;
+    console.log("Start /get-token");
 
-  if (state === null) {
-    console.log("state is null");
-  } else {
-    axios
-      .post(spotifyWebAPIURL + getTokenEndpoint, null, {
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-          Authorization:
-            "Basic " +
-            new Buffer.from(clientId + ":" + client_secret).toString("base64"),
-        },
-        params: {
-          code: code,
-          redirect_uri: redirectUri,
-          grant_type: "authorization_code",
-        },
-      })
-      .then((response) => {
-        accessToken = response.data.access_token;
-        refreshToken = response.data.refresh_token;
+    let code = req.query.code || null;
+    let state = req.query.state || null;
 
-        console.log("Access Token: ", accessToken);
-        console.log("Refresh Token: ", refreshToken);
-      })
-      .catch((error) => {
-        console.error(error.message);
-        axios
-          .post(spotifyWebAPIURL + getRefreshTokenEndpoint, null, {
-            headers: {
-              "content-type": "application/x-www-form-urlencoded",
-              Authorization:
-                "Basic " +
-                new Buffer.from(clientId + ":" + client_secret).toString(
-                  "base64"
-                ),
-            },
-            params: {
-              refresh_token: refreshToken,
-              grant_type: "refresh_token",
-            },
-          })
-          .then((response) => {
-            accessToken = response.data.access_token;
-            refreshToken = response.data.refresh_token;
+    if (state === null) {
+        console.log("state is null");
+    } else {
+        getToken(code)
+            .then((response) => {
+                accessToken = response.data.access_token;
+                refreshToken = response.data.refresh_token;
 
-            console.log("New Access Token: ", accessToken);
-            console.log("New Refresh Token: ", refreshToken);
-          });
-      });
-  }
-  console.log("Complete /get-token");
+                console.log("Access Token: ", accessToken);
+                console.log("Refresh Token: ", refreshToken);
+            })
+            .catch((error) => {
+                console.error(error.message);
+
+                getRefreshToken().then((response) => {
+                    accessToken = response.data.access_token;
+                    refreshToken = response.data.refresh_token;
+
+                    console.log("New Access Token: ", accessToken);
+                    console.log("New Refresh Token: ", refreshToken);
+                });
+            });
+    }
+    console.log("Complete /get-token");
 });
 
 export default router;
