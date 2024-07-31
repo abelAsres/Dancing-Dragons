@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "SpotifyExpress",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
