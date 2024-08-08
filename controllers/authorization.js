@@ -14,8 +14,6 @@ const spotifyAuthAPIURL = "https://accounts.spotify.com";
 const authorizationEndpoint = "/authorize?";
 const getTokenEndpoint = "/api/token";
 const getspotifyRefreshTokenEndpoint = "/refresh_token";
-const clientId = "d673f63e82c74f87a19296161952b27c";
-const client_secret = "273dcd4bfcf740fe9e5c54bbf17b9795";
 const redirectUri = "http://localhost:3000/authorization/get-spotify-token";
 const scope = "user-read-private user-read-email";
 const state = "dancingDragons";
@@ -26,8 +24,8 @@ let googleRefreshToken = "";
 
 //GOOGLE API
 /**
- * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI
- * from the client_secret.json file. To get these credentials for your application, visit
+ * To use OAuth2 authentication, we need access to a CLIENT_ID, process.env.SPOTIFYCLIENTSECRET, AND REDIRECT_URI
+ * from the process.env.SPOTIFYCLIENTSECRET.json file. To get these credentials for your application, visit
  * https://console.cloud.google.com/apis/credentials.
  */
 console.log(JSON.parse(process.env.GOOGLEAPISECRET).redirect_uris[0]);
@@ -52,9 +50,11 @@ const getToken = (code) => {
             "content-type": "application/x-www-form-urlencoded",
             Authorization:
                 "Basic " +
-                new Buffer.from(clientId + ":" + client_secret).toString(
-                    "base64"
-                ),
+                new Buffer.from(
+                    process.env.SPOTIFYCLIENTID +
+                        ":" +
+                        process.env.SPOTIFYCLIENTSECRET
+                ).toString("base64"),
         },
         params: {
             code: code,
@@ -73,9 +73,11 @@ const getspotifyRefreshToken = () => {
                 "content-type": "application/x-www-form-urlencoded",
                 Authorization:
                     "Basic " +
-                    new Buffer.from(clientId + ":" + client_secret).toString(
-                        "base64"
-                    ),
+                    new Buffer.from(
+                        process.env.SPOTIFYCLIENTID +
+                            ":" +
+                            process.env.SPOTIFYCLIENTSECRET
+                    ).toString("base64"),
             },
             params: {
                 refresh_token: spotifyRefreshToken,
@@ -100,7 +102,7 @@ router.get("/", (req, res) => {
     console.log("Start /get-authorization");
 
     let urlSearchParams = new URLSearchParams();
-    urlSearchParams.append("client_id", clientId);
+    urlSearchParams.append("client_id", process.env.SPOTIFYCLIENTID);
     urlSearchParams.append("redirect_uri", redirectUri);
     urlSearchParams.append("response_type", "code");
     urlSearchParams.append("scope", scope);
