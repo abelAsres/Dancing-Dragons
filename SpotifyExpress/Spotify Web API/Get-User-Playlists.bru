@@ -1,17 +1,13 @@
 meta {
   name: Get-User-Playlists
   type: http
-  seq: 5
+  seq: 2
 }
 
 get {
-  url: https://api.spotify.com/v1/users/{{user_id}}/playlists?limit=1
+  url: https://api.spotify.com/v1/users/{{user_id}}/playlists
   body: none
   auth: bearer
-}
-
-params:query {
-  limit: 1
 }
 
 auth:bearer {

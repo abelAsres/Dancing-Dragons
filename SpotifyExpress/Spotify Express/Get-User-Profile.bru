@@ -1,0 +1,19 @@
+meta {
+  name: Get-User-Profile
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/spotify/current-user
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  bru.setEnvVar("user_id",res.body.id);
+}

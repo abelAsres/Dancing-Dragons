@@ -1,11 +1,16 @@
 import express from "express";
 const app = express();
 import cors from "cors";
-import authorization from "./controllers/authorization.js";
+import { authRouter } from "./controllers/authorization.js";
+import spotify from "./controllers/spotifyApi.js";
+import google from "./controllers/googleApi.js";
+
 const port = 3000;
 
 //Routes
-app.use("/authorization", authorization);
+app.use("/authorization", authRouter);
+app.use("/spotify", spotify);
+app.use("/google", google);
 
 // Middlewares
 app.use(cors());
