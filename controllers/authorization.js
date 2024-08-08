@@ -188,4 +188,8 @@ router.get("/get-google-token", async (req, res) => {
     }
 });
 
-export { router as authRouter, spotifyAccessToken, googleAccessToken };
+export {
+    router as authRouter,
+    spotifyAccessToken as spotifyToken,
+    googleAccessToken as googleToken,
+};

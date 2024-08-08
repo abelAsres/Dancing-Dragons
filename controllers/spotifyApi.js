@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import axios from "axios";
-import { spotifyAccessToken } from "./authorization.js";
+import { spotifyToken } from "./authorization.js";
 
 const spotifyWebAPIURL = "https://api.spotify.com/v1";
 const currentUserProfileEndpoint = "/me";
@@ -16,7 +16,7 @@ router.get("/current-user", (req, res) => {
     axios
         .get(spotifyWebAPIURL + currentUserProfileEndpoint, {
             headers: {
-                Authorization: `Bearer ${spotifyAccessToken}`,
+                Authorization: `Bearer ${spotifyToken}`,
             },
         })
         .then((response) => {
@@ -35,7 +35,7 @@ router.get("/users/:userId/playlists", (req, res) => {
     axios
         .get(spotifyWebAPIURL + `/users/${userId}/playlists`, {
             headers: {
-                Authorization: `Bearer ${spotifyAccessToken}`,
+                Authorization: `Bearer ${spotifyToken}`,
             },
         })
         .then((response) => {
