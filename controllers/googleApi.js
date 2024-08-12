@@ -31,4 +31,42 @@ router.get("/current-user-playlists", (req, res) => {
         });
 });
 
+router.post("/playlists", (req, res) => {
+    let params = new URLSearchParams();
+    params.append("part", "snippet");
+    params.append("part", "status");
+
+    axios
+        .post(
+            googleApiURL + playlistsEnpoint,
+            {
+                snippet: {
+                    title: "Sample playlist created via API",
+                    description: "This is a sample playlist description.",
+                    tags: ["sample playlist", "API call"],
+                    defaultLanguage: "en",
+                },
+                status: {
+                    privacyStatus: "private",
+                },
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${googleToken}`,
+                },
+                params: params,
+            }
+        )
+        .then((response) => {
+            console.log(
+                `Success, retrieved ${response.data.snippet.title} was created on ${response.data.snippet.channeltitle} channel`
+            );
+            res.send(response.data);
+        })
+        .catch((error) => {
+            console.error(error.message);
+            res.send(error);
+        });
+});
+
 export default router;
