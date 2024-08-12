@@ -1,3 +1,4 @@
 node_modules
 *.env
 SpotifyExpress\environments
+logs.log
