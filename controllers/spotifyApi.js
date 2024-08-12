@@ -49,4 +49,23 @@ router.get("/users/:userId/playlists", (req, res) => {
         });
 });
 
+router.get("/playlists/:playlistId/tracks", (req, res) => {
+    const playlistId = req.params.playlistId;
+    axios
+        .get(spotifyWebAPIURL + `/playlists/${playlistId}/tracks`, {
+            headers: {
+                Authorization: `Bearer ${spotifyToken}`,
+            },
+        })
+        .then((response) => {
+            console.log(
+                `Success, retrieved ${response.data.items.length} tracks`
+            );
+            res.send(response.data);
+        })
+        .catch((error) => {
+            console.error(error.message);
+        });
+});
+
 export default router;
