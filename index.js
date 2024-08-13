@@ -1,12 +1,13 @@
 import express from "express";
 const app = express();
 import cors from "cors";
-import { authRouter } from "./controllers/authorization.js";
-import spotify from "./controllers/spotifyApi.js";
-import google from "./controllers/googleApi.js";
-
 import winston from "winston";
 import expressWinston from "express-winston";
+import bodyParser from "body-parser";
+
+import { authRouter } from "./controllers/authorization.controller.js";
+import spotify from "./controllers/spotifyApi.controller.js";
+import google from "./controllers/googleApi.controller.js";
 
 const port = 3000;
 
@@ -32,6 +33,7 @@ app.use(
 );
 
 // Middlewares
+app.use(bodyParser.json());
 app.use(cors());
 
 //Routes

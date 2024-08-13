@@ -1,7 +1,8 @@
 import express from "express";
 const router = express.Router();
 import axios from "axios";
-import { spotifyToken } from "./authorization.js";
+import { spotifyToken } from "./authorization.controller.js";
+import { getSpotifyPlaylistTracks } from "../services/playlist.service.js";
 
 const spotifyWebAPIURL = "https://api.spotify.com/v1";
 const currentUserProfileEndpoint = "/me";
@@ -61,7 +62,8 @@ router.get("/playlists/:playlistId/tracks", (req, res) => {
             console.log(
                 `Success, retrieved ${response.data.items.length} tracks`
             );
-            res.send(response.data);
+            let tracks = getSpotifyPlaylistTracks(response.data.items);
+            res.json(tracks);
         })
         .catch((error) => {
             console.error(error.message);
