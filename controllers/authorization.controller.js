@@ -28,7 +28,6 @@ let googleRefreshToken = "";
  * from the process.env.SPOTIFYCLIENTSECRET.json file. To get these credentials for your application, visit
  * https://console.cloud.google.com/apis/credentials.
  */
-console.log(JSON.parse(process.env.GOOGLEAPISECRET).redirect_uris[0]);
 const oauth2Client = new google.auth.OAuth2(
     JSON.parse(process.env.GOOGLEAPISECRET).client_id,
     JSON.parse(process.env.GOOGLEAPISECRET).client_secret,
@@ -99,8 +98,6 @@ router.use(
  *
  */
 router.get("/", (req, res) => {
-    console.log("Start /get-authorization");
-
     let urlSearchParams = new URLSearchParams();
     urlSearchParams.append("client_id", process.env.SPOTIFYCLIENTID);
     urlSearchParams.append("redirect_uri", redirectUri);
@@ -111,29 +108,25 @@ router.get("/", (req, res) => {
     res.redirect(
         spotifyAuthAPIURL + authorizationEndpoint + urlSearchParams.toString()
     );
-
-    console.log("Complete /get-authorization");
 });
 
 /**GET TOKEN
  *
  */
 router.get("/get-spotify-token", (req, res) => {
-    console.log("Start /get-token");
-
     let code = req.query.code || null;
     let state = req.query.state || null;
 
     if (state === null) {
-        console.log("state is null");
+        res.status(400).json("state is null");
     } else {
         getToken(code)
             .then((response) => {
                 spotifyAccessToken = response.data.access_token;
                 spotifyRefreshToken = response.data.refresh_token;
 
-                console.log("Access Token: ", spotifyAccessToken);
-                console.log("Refresh Token: ", spotifyRefreshToken);
+                // console.log("Access Token: ", spotifyAccessToken);
+                // console.log("Refresh Token: ", spotifyRefreshToken);
             })
             .catch((error) => {
                 console.error(error.message);
@@ -142,12 +135,11 @@ router.get("/get-spotify-token", (req, res) => {
                     spotifyAccessToken = response.data.access_token;
                     spotifyRefreshToken = response.data.refresh_token;
 
-                    console.log("New Access Token: ", spotifyAccessToken);
-                    console.log("New Refresh Token: ", spotifyRefreshToken);
+                    // console.log("New Access Token: ", spotifyAccessToken);
+                    // console.log("New Refresh Token: ", spotifyRefreshToken);
                 });
             });
     }
-    console.log("Complete /get-token");
 });
 
 router.get("/google-auth", (req, res) => {
@@ -183,7 +175,7 @@ router.get("/get-google-token", async (req, res) => {
     } else {
         // Get access and refresh tokens (if access_type is offline)
         let { tokens } = await oauth2Client.getToken(code);
-        console.log(tokens);
+        // console.log(tokens);
         googleAccessToken = tokens.access_token;
         googleRefreshToken = tokens.refresh_token;
         oauth2Client.setCredentials(tokens);
@@ -194,4 +186,6 @@ export {
     router as authRouter,
     spotifyAccessToken as spotifyToken,
     googleAccessToken as googleToken,
+    getToken,
+    getspotifyRefreshToken,
 };

@@ -9,8 +9,6 @@ import { authRouter } from "./controllers/authorization.controller.js";
 import spotify from "./controllers/spotifyApi.controller.js";
 import google from "./controllers/googleApi.controller.js";
 
-const port = 3000;
-
 //LOGGER
 app.use(
     expressWinston.logger({
@@ -29,6 +27,7 @@ app.use(
         ignoreRoute: function (req, res) {
             return false;
         }, // optional: allows to skip some log messages based on request and/or response
+        level: "debug",
     })
 );
 
@@ -48,13 +47,12 @@ app.use(
             winston.format.colorize(),
             winston.format.json()
         ),
+        level: "debug",
     })
 );
 
 app.get("/", (req, res) => {
-    res.send({ msg: "You've reached Spotify Express" });
+    res.send({ msg: "You've reached Dancing Dragons!" });
 });
 
-app.listen(port, () => {
-    console.log(`Spotify Express is running on @ localhost:${port}`);
-});
+export { app };

@@ -4,7 +4,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": " jasmine",
+    "coverage": "nyc --reporter=html npm run test "
+  },
+  "nyc": {
+    "report-dir": "spec/coverage",
+    "exclude": [
+      "spec/**/*"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -22,5 +29,11 @@
     "query-string": "^9.1.0",
     "request": "^2.88.2",
     "winston": "^3.14.1"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^2.0.0",
+    "jasmine": "^5.2.0",
+    "jasmine-spec-reporter": "^7.0.0",
+    "supertest": "^7.0.0"
   }
 }
